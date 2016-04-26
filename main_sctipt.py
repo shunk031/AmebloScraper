@@ -4,6 +4,7 @@ from urllib.request import urlopen
 from urllib.error import HTTPError
 from bs4 import BeautifulSoup
 import time
+import csv
 
 
 def scrapingArticleText(url):
@@ -21,26 +22,48 @@ def scrapingArticleText(url):
         soup = BeautifulSoup(html.read(), "lxml")
 
         date = soup.find('time').string
-        lawArticleText = soup.find("div", {"class": "articleText"})
+        lawArticleTexts = soup.find("div", {"class": "articleText"})
 
-        articleText = cleanArticleText(lawArticleText)
+        articleTexts = cleanArticleTexts(lawArticleTexts)
 
     except AttributeError as e:
         return None
 
-    return dict(date=date, article=articleText)
+    return dict(date=date, article=articleTexts)
 
 
-def cleanArticleText(lawArticle):
+def cleanArticleTexts(lawArticle):
+    """
+    記事データをクリーニングする
+    """
 
-    cleanText = "\n".join(lawArticle.strings)
-    cleanText = cleanText.replace(u"\xa0", "\n")
-    cleanText = cleanText.split("\n")
+    cleanTexts = "\n".join(lawArticle.strings)
+    cleanTexts = cleanTexts.replace(u"\xa0", "\n")
+    cleanTexts = cleanTexts.split("\n")
 
-    while cleanText.count("") > 0:
-        cleanText.remove("")
+    while cleanTexts.count("") > 0:
+        cleanTexts.remove("")
 
-    return cleanText
+    return cleanTexts
+
+
+def saveArticleTexts(articleTexts):
+    """
+    date, articleTextを保持する辞書を受け取り、
+    CSVファイルにアウトプットする
+    """
+
+    csvFile = open("data.csv", 'w+', newline='', encoding='utf-8')
+
+    try:
+        writer = csv.writer(csvFile)
+        writer.writerow(('date', 'article'))
+
+        for articleText in articleTexts['article']:
+            writer.writerow((articleTexts['date'], articleText))
+
+    finally:
+        csvFile.close()
 
 
 def crawler(url):
@@ -59,17 +82,18 @@ def crawler(url):
             print(nextPage.attrs['href'])
 
         time.sleep(5)
-        result = scrapingArticleText(nextPage.attrs['href'])
+        results = scrapingArticleText(nextPage.attrs['href'])
 
-        if result == None:
+        if results == None:
             print("Can't find the text")
 
         else:
-            print(result['date'])
+            print(results['date'])
 
-            for i in result['article']:
-                print(i)
+            for result in results['article']:
+                print(result)
 
+            saveArticleTexts(results)
             crawler(nextPage.attrs['href'])
 
 
