@@ -29,6 +29,7 @@ def scrapingArticleText(url):
     except AttributeError as e:
         return None
 
+    # 投稿日時と記事内容を格納する辞書データをリターンする
     return dict(date=date, article=articleTexts)
 
 
@@ -36,15 +37,36 @@ def cleanArticleTexts(lawArticle):
     """
     記事データをクリーニングする
     """
-
+    # 取得したHTMLファイル中のbrタグを改行文字に変更
     cleanTexts = "\n".join(lawArticle.strings)
+    # 不要な文字列を改行文字に変更
     cleanTexts = cleanTexts.replace(u"\xa0", "\n")
+    # 改行文字で文字列を区切る
     cleanTexts = cleanTexts.split("\n")
 
+    # リスト内に要素が存在しない場合は取り除く
     while cleanTexts.count("") > 0:
         cleanTexts.remove("")
 
     return cleanTexts
+
+
+def getNextPageLink(url):
+
+    html = urlopen(url)
+    soup = BeautifulSoup(html.read(), "lxml")
+
+    nextPage = soup.find("a", {"class": "pagingNext"})
+
+    if nextPage is not None:
+
+        if 'href' in nextPage.attrs:
+            nextPageLink = nextPage.attrs['href']
+            print("\n" + nextPageLink)
+
+            return nextPageLink
+    else:
+        return None
 
 
 def saveArticleTexts(articleTexts):
@@ -53,11 +75,11 @@ def saveArticleTexts(articleTexts):
     CSVファイルにアウトプットする
     """
 
-    csvFile = open("data.csv", 'w+', newline='', encoding='utf-8')
+    csvFile = open("data.csv", 'a', newline='', encoding='utf-8')
 
     try:
         writer = csv.writer(csvFile)
-        writer.writerow(('date', 'article'))
+        # writer.writerow(('date', 'article'))
 
         for articleText in articleTexts['article']:
             writer.writerow((articleTexts['date'], articleText))
@@ -70,36 +92,28 @@ def crawler(url):
     """
     次の記事のリンクを再帰的に所得する
     """
+    results = scrapingArticleText(url)
 
-    html = urlopen(url)
-    soup = BeautifulSoup(html, "lxml")
+    if results == None:
+        print("Can't find the text")
 
-    nextPage = soup.find("a", {"class": "pagingNext"})
+    else:
+        print(results['date'])
 
-    if nextPage is not None:
+        for result in results['article']:
+            print(result)
 
-        if 'href' in nextPage.attrs:
-            print(nextPage.attrs['href'])
+        saveArticleTexts(results)
 
         time.sleep(5)
-        results = scrapingArticleText(nextPage.attrs['href'])
-
-        if results == None:
-            print("Can't find the text")
-
-        else:
-            print(results['date'])
-
-            for result in results['article']:
-                print(result)
-
-            saveArticleTexts(results)
-            crawler(nextPage.attrs['href'])
+        nextPageLink = getNextPageLink(url)
+        crawler(nextPageLink)
 
 
 def main():
 
     crawler("http://ameblo.jp/ogurayui-0815/")
+
     print("Finish!")
 
 if __name__ == '__main__':
