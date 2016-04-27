@@ -5,6 +5,7 @@ from urllib.error import HTTPError
 from bs4 import BeautifulSoup
 import time
 import csv
+import datetime
 
 
 def scrapingArticleText(url):
@@ -21,16 +22,22 @@ def scrapingArticleText(url):
     try:
         soup = BeautifulSoup(html.read(), "lxml")
 
+        # 日付情報の処理
         date = soup.find('time').string
+        d = datetime.datetime.strptime(date, '%Y年%m月%d日')
+        date_string = d.strftime('%Y-%m-%d')
+
+        # ブログ記事の取得
         lawArticleTexts = soup.find("div", {"class": "articleText"})
 
+        # ブログ記事データをクリーニング
         articleTexts = cleanArticleTexts(lawArticleTexts)
 
     except AttributeError as e:
         return None
 
     # 投稿日時と記事内容を格納する辞書データをリターンする
-    return dict(date=date, article=articleTexts)
+    return dict(date=date_string, article=articleTexts)
 
 
 def cleanArticleTexts(lawArticle):
