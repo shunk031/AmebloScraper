@@ -106,13 +106,20 @@ def crawler(url):
         saveArticleTexts(results)
 
         time.sleep(5)
-        nextPageLink = getNextPageLink(url)
-        crawler(nextPageLink)
+        # nextPageLink = getNextPageLink(url)
+        # crawler(nextPageLink)
 
 
 def main():
 
-    crawler("http://ameblo.jp/ogurayui-0815/")
+    target_url = "http://ameblo.jp/ogurayui-0815/"
+
+    while True:
+        crawler(target_url)
+        target_url = getNextPageLink(target_url)
+
+        if target_url is None:
+            break
 
     print("Finish!")
 
