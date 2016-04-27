@@ -106,8 +106,6 @@ def crawler(url):
         saveArticleTexts(results)
 
         time.sleep(5)
-        # nextPageLink = getNextPageLink(url)
-        # crawler(nextPageLink)
 
 
 def main():
