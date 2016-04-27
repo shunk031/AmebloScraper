@@ -5,11 +5,15 @@ from urllib.error import HTTPError
 from bs4 import BeautifulSoup
 import time
 import csv
+import datetime
 
 html = urlopen("http://ameblo.jp/ogurayui-0815/page-2.html")
 soup = BeautifulSoup(html.read(), "lxml")
 
 date = soup.find('time').string
+d = datetime.datetime.strptime(date, '%Y年%m月%d日')
+date_string = d.strftime('%Y-%m-%d')
+
 lawArticleTexts = soup.find("div", {"class": "articleText"})
 
 articleTexts = "\n".join(lawArticleTexts.strings)
@@ -29,6 +33,6 @@ try:
     writer.writerow(('date', 'article'))
 
     for articleText in articleTexts:
-        writer.writerow((date, articleText))
+        writer.writerow((date_string, articleText))
 finally:
     csvFile.close()
