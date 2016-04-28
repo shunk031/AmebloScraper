@@ -111,7 +111,7 @@ def crawler(url):
 
     else:
         print(results['date'])
-
+        print(results['title'])
         for result in results['article']:
             print(result)
 
