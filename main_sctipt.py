@@ -80,13 +80,12 @@ def getNextPageLink(url):
         return None
 
 
-def saveArticleTexts(articleTexts):
+def saveArticleTexts(articleTexts, filename):
     """
     date, articleTextを保持する辞書を受け取り、
     CSVファイルにアウトプットする
     """
-
-    csvFile = open("data.csv", 'a', newline='', encoding='utf-8')
+    csvFile = open(filename, 'a', newline='', encoding='utf-8')
 
     try:
         writer = csv.writer(csvFile)
@@ -100,7 +99,7 @@ def saveArticleTexts(articleTexts):
         csvFile.close()
 
 
-def crawler(url):
+def crawler(url, filename):
     """
     次の記事のリンクを再帰的に所得する
     """
@@ -115,24 +114,28 @@ def crawler(url):
         for result in results['article']:
             print(result)
 
-        saveArticleTexts(results)
+        saveArticleTexts(results, filename)
 
         time.sleep(5)
 
 
 def main():
 
-    argvs = sys.argvs
+    argvs = sys.argv
     argc = len(argvs)
 
-    if argc == 1:
+    if argc == 2:
         target_url = argvs[1]
     else:
         # デフォルトのターゲットURLを利用する
         target_url = "http://ameblo.jp/ogurayui-0815/"
 
+    filename = target_url.replace("http://ameblo.jp/", "")
+    filename = filename.rstrip("/")
+    filename = filename + ".csv"
+
     while True:
-        crawler(target_url)
+        crawler(target_url, filename)
         target_url = getNextPageLink(target_url)
 
         if target_url is None:

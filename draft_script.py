@@ -7,7 +7,10 @@ import time
 import csv
 import datetime
 
-html = urlopen("http://ameblo.jp/ogurayui-0815/page-2.html")
+target_url = "http://ameblo.jp/ogurayui-0815/page-2.html"
+target_url = "http://ameblo.jp/ogurayui-0815/"
+
+html = urlopen(target_url)
 soup = BeautifulSoup(html.read(), "lxml")
 
 date = soup.find('time').string
@@ -29,13 +32,26 @@ while articleTexts.count("") > 0:
 for articleText in articleTexts:
     print(articleText)
 
-csvFile = open("data.csv", 'w+', newline='', encoding='utf-8')
+csvFileName = target_url.replace("http://ameblo.jp/", "")
+csvFileName = csvFileName.rstrip("/")
+csvFileName = csvFileName + ".csv"
+csvFileName
 
-try:
+
+csvFile = open(csvFileName, 'a', newline='', encoding='utf-8')
+
+# try:
+#     writer = csv.writer(csvFile)
+#     writer.writerow(('date', 'article'))
+
+#     for articleText in articleTexts:
+#         writer.writerow((date_string, articleText))
+# finally:
+#     csvFile.close()
+
+with open(csvFileName, 'a', newline='', encoding='utf-8') as csvFile:
     writer = csv.writer(csvFile)
     writer.writerow(('date', 'article'))
 
     for articleText in articleTexts:
         writer.writerow((date_string, articleText))
-finally:
-    csvFile.close()
