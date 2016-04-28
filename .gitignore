@@ -1,4 +1,7 @@
 # ameblo-crawler gitignore
 
+# ignore files
+*.csv
+
 # ignore some specific files
 README.html
