@@ -14,6 +14,9 @@ date = soup.find('time').string
 d = datetime.datetime.strptime(date, '%Y年%m月%d日')
 date_string = d.strftime('%Y-%m-%d')
 
+title = soup.find(class_="skinArticleTitle").string
+title
+
 lawArticleTexts = soup.find("div", {"class": "articleText"})
 
 articleTexts = "\n".join(lawArticleTexts.strings)
