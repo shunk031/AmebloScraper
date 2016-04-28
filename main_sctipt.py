@@ -106,7 +106,7 @@ def crawler(url):
     """
     results = scrapingArticleText(url)
 
-    if results == None:
+    if results is None:
         print("Can't find the text")
 
     else:
