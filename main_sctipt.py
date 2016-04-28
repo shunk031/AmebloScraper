@@ -122,7 +122,14 @@ def crawler(url):
 
 def main():
 
-    target_url = "http://ameblo.jp/ogurayui-0815/"
+    argvs = sys.argvs
+    argc = len(argvs)
+
+    if argc == 1:
+        target_url = argvs[1]
+    else:
+        # デフォルトのターゲットURLを利用する
+        target_url = "http://ameblo.jp/ogurayui-0815/"
 
     while True:
         crawler(target_url)
