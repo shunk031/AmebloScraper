@@ -12,7 +12,9 @@ import sys
 def scrapingArticleText(url):
     """
     引数から得たURLからブログ本文を取得して
-    一文ずつ区切ったstringのlistをreturnする
+    日付、ブログタイトル、ブログ本文を
+    一文ずつ区切ったstringのlistとディクショナリとして
+    returnする
     """
 
     try:
@@ -63,6 +65,10 @@ def cleanArticleTexts(lawArticle):
 
 
 def getNextPageLink(url):
+    """
+    ブログ本文から次のページへのリンクを取得する
+    リンクが存在しない場合はNoneがreturnする
+    """
 
     html = urlopen(url)
     soup = BeautifulSoup(html.read(), "lxml")
@@ -84,6 +90,7 @@ def saveArticleTexts(articleTexts, filename):
     """
     date, articleTextを保持する辞書を受け取り、
     CSVファイルにアウトプットする
+    ブログ毎に出力ファイル名をファイル名を変更する
     """
     csvFile = open(filename, 'a', newline='', encoding='utf-8')
 
