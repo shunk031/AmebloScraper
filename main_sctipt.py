@@ -7,6 +7,7 @@ import time
 import csv
 import datetime
 import sys
+import re
 
 
 class AmebloCrawler:
@@ -17,7 +18,7 @@ class AmebloCrawler:
     def __init__(self, targetUrl):
         self.targetUrl = targetUrl
         self.beforeUrl = targetUrl
-        self.afterUrl = targetUrl
+        self.csvFileName = self.convertFileName(targetUrl)
 
     def scrapingArticleText(self, url):
         """
@@ -78,29 +79,32 @@ class AmebloCrawler:
         リンクが存在しない場合はNoneがreturnする
         """
 
+        self.beforeUrl = url
+
         html = urlopen(url)
         soup = BeautifulSoup(html.read(), "lxml")
 
-        nextPage = soup.find("a", {"class": "pagingNext"})
+        nextPageUrl = soup.find("a", {"class": "pagingNext"})
 
-        if nextPage is not None:
+        # nextPageUrlが空でなく、前のページと現在のページのURLが違うとき
+        if nextPageUrl is not None and self.beforeUrl is not nextPageUrl:
 
-            if 'href' in nextPage.attrs:
-                nextPageLink = nextPage.attrs['href']
+            if 'href' in nextPageUrl.attrs:
+                nextPageLink = nextPageUrl.attrs['href']
                 print("\n" + nextPageLink)
 
                 return nextPageLink
         else:
             return None
 
-    def saveArticleTexts(self, articleTexts, filename):
+    def saveArticleTexts(self, articleTexts):
         """
         date, articleTextを保持する辞書を受け取り、
         CSVファイルにアウトプットする
         ブログ毎に出力ファイル名をファイル名を変更する
         """
 
-        csvFile = open(filename, 'a', newline='', encoding='utf-8')
+        csvFile = open(self.csvFileName, 'a', newline='', encoding='utf-8')
 
         try:
             writer = csv.writer(csvFile)
@@ -113,7 +117,14 @@ class AmebloCrawler:
         finally:
             csvFile.close()
 
-    def crawler(self, url, filename):
+    def convertFileName(self, url):
+        """
+        URLから正規表現でブログURLからCSVファイル名を生成する
+        """
+        filename = re.search('^http:\/\/ameblo.jp\/(.*?)\/', url)
+        return filename.group(1) + ".csv"
+
+    def crawler(self, url):
         """
         次の記事のリンクを再帰的に所得する
         """
@@ -128,7 +139,7 @@ class AmebloCrawler:
             for result in results['article']:
                 print(result)
 
-            self.saveArticleTexts(results, filename)
+            self.saveArticleTexts(results)
 
             time.sleep(5)
 
@@ -146,12 +157,8 @@ def main():
 
     ac = AmebloCrawler(targetUrl)
 
-    filename = targetUrl.replace("http://ameblo.jp/", "")
-    filename = filename.rstrip("/")
-    filename = filename + ".csv"
-
     while True:
-        ac.crawler(targetUrl, filename)
+        ac.crawler(targetUrl)
         targetUrl = ac.getNextPageLink(targetUrl)
 
         if targetUrl is None:
