@@ -79,21 +79,26 @@ class AmebloCrawler:
         リンクが存在しない場合はNoneがreturnする
         """
 
-        self.beforeUrl = url
-
         html = urlopen(url)
         soup = BeautifulSoup(html.read(), "lxml")
 
-        nextPageUrl = soup.find("a", {"class": "pagingNext"})
+        nextPageTag = soup.find("a", {"class": "pagingNext"})
 
-        # nextPageUrlが空でなく、前のページと現在のページのURLが違うとき
-        if nextPageUrl is not None and self.beforeUrl is not nextPageUrl:
+        self.beforeUrl = url
 
-            if 'href' in nextPageUrl.attrs:
-                nextPageLink = nextPageUrl.attrs['href']
+        # nextPageTagが存在し、タグ内にリンクが存在する場合
+        if nextPageTag is not None and 'href' in nextPageTag.attrs:
+
+            nextPageLink = nextPageTag.attrs['href']
+
+            # 前のページと現在のページのURLが違う場合
+            if self.beforeUrl != nextPageLink:
                 print("\n" + nextPageLink)
-
                 return nextPageLink
+
+            else:
+                return None
+
         else:
             return None
 
@@ -126,7 +131,7 @@ class AmebloCrawler:
 
     def crawler(self, url):
         """
-        次の記事のリンクを再帰的に所得する
+        受け取ったURLからブログ記事データを取得して保存する
         """
         results = self.scrapingArticleText(url)
 
@@ -140,7 +145,6 @@ class AmebloCrawler:
                 print(result)
 
             self.saveArticleTexts(results)
-
             time.sleep(5)
 
 
