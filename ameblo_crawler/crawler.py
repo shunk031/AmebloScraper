@@ -14,9 +14,10 @@ except ImportError:
 
 class AmebloCrawler:
 
-    def __init__(self, target_url):
+    def __init__(self, target_url, save_dir="./data"):
         self.target_url = target_url
         self.before_url = None
+        self.save_dir = save_dir
 
     def make_soup(self, url):
         try:

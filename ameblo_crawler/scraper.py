@@ -19,7 +19,7 @@ except ImportError:
 
 class AmebloScraper:
 
-    def __init__(self, target_url, save_dir="./data"):
+    def __init__(self, target_url, save_dir):
         self.target_url = target_url
         self.save_dir = save_dir
 
