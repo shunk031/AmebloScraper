@@ -3,5 +3,8 @@
 # ignore files
 *.csv
 
+# ignore directory
+__pycache__/
+
 # ignore some specific files
 README.html
