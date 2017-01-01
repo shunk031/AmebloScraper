@@ -7,6 +7,12 @@ Easily crawl and scrape [Ameblo](http://ameblo.jp/).
 * BeautifulSoup4
 * lxml
 
+## Install
+
+``` shell
+pip install git+https://github.com/shunk031/ameblo-crawler.git
+```
+
 ## Usage
 
 ``` python
