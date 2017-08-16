@@ -1,10 +1,7 @@
-# ameblo-crawler gitignore
+# gitignore for AmebloScraper
 
-# ignore files
-*.csv
+*.json
+*.html
+.python-version
 
-# ignore directory
 __pycache__/
-
-# ignore some specific files
-README.html
