@@ -17,6 +17,9 @@ NEWSPIDER_MODULE = 'AmebloScraper.spiders'
 # Get an output in UTF-8 encoded unicode
 FEED_EXPORT_ENCODING = 'utf-8'
 
+# indent size of json file
+FEED_EXPORT_INDENT = 2
+
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = 'AmebloScraper (+http://www.yourdomain.com)'
 USER_AGENT = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
