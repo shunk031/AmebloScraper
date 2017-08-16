@@ -1,26 +1,16 @@
-# Ameblo Crawler
+# AmebloScraper
 
-Easily crawl and scrape [Ameblo](http://ameblo.jp/).
+Scraper for Ameblo in Scrapy.
 
-## Dependency
+## Requirements
 
-* BeautifulSoup4
-* lxml
+* Python 3.5.1
+* Scrapy 1.4.0
 
-## Install
+## How to run
+
+crawl https://ameblo.jp/TARGET_BLOG and output blog.json
 
 ``` shell
-pip install git+https://github.com/shunk031/ameblo-crawler.git
-```
-
-## Usage
-
-``` python
-from ameblo_crawler.crawler import AmebloCrawler
-
-target_url = "http://ameblo.jp/foo/"
-save_dir = "/path/to/save/dir"
-
-crawler = AmebloCrawler(target_url, save_dir)
-crawler.crawl()
+scrapy crawl ameblo_scraper -a start_url='https://ameblo.jp/TARGET_BLOG' -o blog.json
 ```
