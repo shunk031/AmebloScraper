@@ -1,6 +1,6 @@
 # AmebloScraper
 
-Scraper for Ameblo in Scrapy.
+Scraper for [Ameblo](https://ameblo.jp/) in Scrapy.
 
 ## Requirements
 
