@@ -14,3 +14,6 @@ class AmebloscraperItem(scrapy.Item):
     article_title = scrapy.Field()
     article_datetime = scrapy.Field()
     article_body = scrapy.Field()
+
+    image_urls = scrapy.Field()
+    images = scrapy.Field()

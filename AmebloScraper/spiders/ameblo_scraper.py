@@ -14,6 +14,7 @@ class AmebloScraperBaseSpider(scrapy.Spider):
         'article_title': 'article div.skinArticleHeader h1 a::text',
         'article_datetime': 'article span.articleTime time::text',
         'article_body': 'article div.skinArticleBody div.articleText ::text',
+        'image_urls': 'article div.skinArticleBody div.articleText a img::attr("src")',
         'next_page': 'article div.pagingArea a.pagingNext::attr("href")',
     }
 
@@ -34,6 +35,7 @@ class AmebloScraperBaseSpider(scrapy.Spider):
         item['article_title'] = response.css(self.elements['article_title']).extract_first()
         item['article_datetime'] = response.css(self.elements['article_datetime']).extract_first()
         item['article_body'] = response.css(self.elements['article_body']).extract()
+        item['image_urls'] = response.css(self.elements['image_urls']).extract()
 
         yield item
 
