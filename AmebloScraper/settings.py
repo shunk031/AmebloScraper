@@ -68,10 +68,13 @@ DOWNLOAD_DELAY = 1
 #    'scrapy.extensions.telnet.TelnetConsole': None,
 # }
 
+IMAGES_STORE = 'images'
+
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     # 'AmebloScraper.pipelines.AmebloscraperPipeline': 300,
+    'scrapy.pipelines.images.ImagesPipeline': 1,
     'AmebloScraper.pipelines.ValidationPipeline': 300,
     'AmebloScraper.pipelines.FormatArticleBody': 400,
     'AmebloScraper.pipelines.FormatArticleTitle': 410,
